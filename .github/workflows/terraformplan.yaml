@@ -1,0 +1,26 @@
+#### This workflow would  triigger github actions anytime there is a pull reqiuest made to the main branch
+name: pull request for terraform plan. 
+## the below would would triiger  github actions to run when there is a pull request made to the main branch. 
+on:
+  pull_request:
+    branches:
+      - main           
+jobs: 
+  terraformplan: ## this specifies the name of the job
+    runs-on: ubuntu-latest 
+    steps: # specfy the commands github actions should execute on the runner.  
+      - name: clone repo.
+        uses: actions/checkout@v4  # this action would have  github actions clone the code from the repo into the runner. 
+      - name: setup terraform. 
+        uses: hashicorp/setup-terraform@v3 # this action would deownload and setup the latest version of terraform on the runner. 
+      - name: setup aws cli.
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: "us-east-1" 
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_KEY}}
+      - name: Init
+        run: terraform init 
+      - name: Plan 
+        run: terraform plan     
+           
